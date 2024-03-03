@@ -4,9 +4,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { sidebarLinks } from "@/constant";
@@ -81,6 +78,7 @@ const MobileNav = () => {
             Dev <span className="text-primary-500">Overflow</span>
           </p>
         </Link>
+
         <div>
           <SheetClose asChild>
             <NavContent />
@@ -88,7 +86,7 @@ const MobileNav = () => {
 
           <SignedOut>
             <div className="flex flex-col gap-3">
-              <SheetClose>
+              <SheetClose asChild>
                 <Link href="/sign-in">
                   <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none">
                     <span className="primary-text-gradient">Log in</span>
@@ -96,7 +94,7 @@ const MobileNav = () => {
                 </Link>
               </SheetClose>
 
-              <SheetClose>
+              <SheetClose asChild>
                 <Link href="/sign-up">
                   <Button
                     className="small-medium light-border-2 
