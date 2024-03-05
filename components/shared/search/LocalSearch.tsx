@@ -1,13 +1,13 @@
+import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import React from "react";
-import { Input } from "@/components/ui/input";
 
-const GlobalSearch = () => {
+const LocalSearch = () => {
   return (
-    <div className="relative w-full max-w-[600px] max-lg:hidden">
+    <div className="relative w-full">
       <div
         className="background-light800_darkgradient relative flex min-h-[56px] 
-      grow items-center gap-1 rounded-xl px-4"
+  grow items-center gap-1 rounded-xl px-4"
       >
         <Image
           src="/assets/icons/search.svg"
@@ -18,14 +18,14 @@ const GlobalSearch = () => {
         ></Image>
         <Input
           type="text"
-          placeholder="Search globally"
+          placeholder="Search for Questions Here..."
           className="paragraph-regular no-focus placeholder 
-          background-light800_darkgradient 
-          text-light400_light500 border-none shadow-none outline-none"
+      background-light800_darkgradient 
+      text-light400_light500 border-none shadow-none outline-none"
         />
       </div>
     </div>
   );
 };
 
-export default GlobalSearch;
+export default LocalSearch;
