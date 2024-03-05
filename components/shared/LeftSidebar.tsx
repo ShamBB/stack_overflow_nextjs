@@ -20,7 +20,7 @@ const LeftSidebar = () => {
       top-0 h-screen overflow-y-auto p-6 pt-36 dark:shadow-none
       max-sm:hidden lg:w-[266px]"
     >
-      <div className="flex h-full flex-col gap-6 pt-1">
+      <div className="flex flex-col gap-6 pt-1">
         {sidebarLinks.map((item) => {
           const isActive =
             (pathname.includes(item.route) && item.route.length > 1) ||

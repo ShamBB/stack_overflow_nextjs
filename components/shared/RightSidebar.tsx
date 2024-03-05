@@ -58,7 +58,7 @@ const RightSidebar = () => {
       top-0 h-screen w-[330px] overflow-y-auto border-l p-6 pt-40
       dark:shadow-none max-xl:hidden"
     >
-      <div className="flex h-full flex-col gap-[60px] pt-1">
+      <div className="flex flex-col gap-[60px] pt-1">
         <div>
           <h3 className="h3-bold text-dark200_light900">Hot Network</h3>
           <ul className="text-dark500_light700 body-medium flex flex-col gap-[30px] pt-[26px]">
