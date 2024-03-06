@@ -1,3 +1,4 @@
+import HomeCard from "@/components/home/HomeCard";
 import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
@@ -20,8 +21,8 @@ export default function Home() {
       </div>
 
       <div
-        className="mt-11 flex justify-between gap-5 max-sm:flex-col 
-      sm:items-center md:flex-col md:items-stretch"
+        className="mt-11 flex flex-col justify-between gap-7 
+      max-sm:flex-col md:items-stretch"
       >
         <LocalSearchBar
           route="/"
@@ -35,6 +36,7 @@ export default function Home() {
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           containerClasses="hidden max-md:flex"
         />
+        <HomeCard />
       </div>
     </>
   );
