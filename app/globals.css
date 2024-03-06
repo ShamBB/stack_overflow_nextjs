@@ -4,6 +4,10 @@
 
 @import url("../styles/theme.css");
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Inter", sans-serif;
 }
