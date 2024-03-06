@@ -3,6 +3,7 @@ import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constant/filters";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -36,7 +37,17 @@ export default function Home() {
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           containerClasses="hidden max-md:flex"
         />
-        <HomeCard />
+
+        <div className="mt-10 flex flex-1 items-center justify-center">
+          <Image
+            src="/assets/images/dark-illustration.png"
+            alt="illustration"
+            width={269}
+            height={200}
+            className=""
+          ></Image>
+        </div>
+        {/* <HomeCard /> */}
       </div>
     </>
   );
