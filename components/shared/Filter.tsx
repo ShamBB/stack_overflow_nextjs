@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import HomeFilters from "../home/HomeFilters";
 
 interface FilterSearchProps {
   filters: {
@@ -25,7 +24,6 @@ const Filter = ({
 }: FilterSearchProps) => {
   return (
     <>
-      <HomeFilters />
       <div className={`relative ${containerClasses}`}>
         <Select>
           <SelectTrigger

@@ -50,3 +50,21 @@ export const multiFormatDateString = (timestamp: string = ""): string => {
       return "Just now";
   }
 };
+
+export function formatNumberWithExtension(number: number): string {
+  let result: string = "";
+
+  if (number >= 1000000) {
+    const millions = (number / 1000000).toFixed(number % 1000000 === 0 ? 0 : 1);
+    result = millions + "M";
+    number /= 1000000;
+  } else if (number >= 1000) {
+    const thousands = (number / 1000).toFixed(number % 1000 === 0 ? 0 : 1);
+    result = thousands + "K";
+    number /= 1000;
+  } else {
+    result = number.toString();
+  }
+
+  return result;
+}

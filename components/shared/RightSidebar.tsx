@@ -5,46 +5,46 @@ import RenderTag from "./RenderTag";
 
 const hotQuestions = [
   {
-    _id: 1,
+    _id: "1",
     title:
       "Would it be appropriate to point out an error in another paper during a referee report?",
   },
   {
-    _id: 2,
+    _id: "2",
     title: "How can an airconditioning machine exist?",
   },
   {
-    _id: 3,
+    _id: "3",
     title: "Interrogated every time crossing UK Border as citizen",
   },
   {
-    _id: 4,
+    _id: "4",
     title: "Low digit addition generator",
   },
   {
-    _id: 5,
+    _id: "5",
     title: "What is an example of 3 numbers that do not make up a vector?",
   },
 ];
 
 const popularTags = [
   {
-    _id: 1,
+    _id: "1",
     name: "JAVASCRIPT",
     count: 20152,
   },
   {
-    _id: 2,
+    _id: "2",
     name: "NEXT.js",
     count: 20152,
   },
   {
-    _id: 3,
+    _id: "3",
     name: "React.js",
     count: 20152,
   },
   {
-    _id: 4,
+    _id: "4",
     name: "Node.js",
     count: 20152,
   },
