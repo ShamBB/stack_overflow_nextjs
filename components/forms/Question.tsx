@@ -20,11 +20,13 @@ import { Editor } from "@tinymce/tinymce-react";
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
+import { createQuestion } from "@/lib/actions/question.action";
 
 const type: any = "create";
 
 export default function Question() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const editorRef = useRef(null);
   // ...
   const form = useForm<z.infer<typeof QuestionsSchema>>({
@@ -36,16 +38,19 @@ export default function Question() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
     try {
-      // make an async
+      await createQuestion(values);
     } catch (error) {
     } finally {
       setIsSubmitting(false);
     }
-    console.log(values);
   }
+
+  const handleEditorChange = (content, editor) => {
+    form.setValue("explanation", editor.getContent({ format: "text" }).trim());
+  };
 
   function handleInputKeyDown(
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -136,6 +141,7 @@ export default function Question() {
                     editorRef.current = editor;
                   }}
                   initialValue=""
+                  onEditorChange={handleEditorChange}
                   init={{
                     height: 500,
                     menubar: false,
