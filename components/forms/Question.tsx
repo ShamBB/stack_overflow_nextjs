@@ -21,11 +21,18 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
 const type: any = "create";
 
-export default function Question() {
+interface Props {
+  mongoseUserId: string;
+}
+
+export default function Question({ mongoseUserId }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const editorRef = useRef(null);
   // ...
@@ -41,8 +48,16 @@ export default function Question() {
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
     try {
-      await createQuestion(values);
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoseUserId),
+      });
+
+      router.push("/");
     } catch (error) {
+      console.log(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -130,7 +145,7 @@ export default function Question() {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Detailed explanation of your peoblem{" "}
+                Detailed explanation of your problem{" "}
                 <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
