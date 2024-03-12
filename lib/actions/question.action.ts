@@ -4,14 +4,39 @@ import { IQuestion, Question } from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import { Tag } from "@/database/tag.model";
 import mongoose from "mongoose";
+import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
+import { User } from "@/database/user.mode";
+import { revalidatePath } from "next/cache";
 
-export async function createQuestion(params: any) {
+export async function getQuestions(params: GetQuestionsParams) {
+  try {
+    connectToDatabase();
+
+    const questions = await Question.find()
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .sort({ createdAt: -1 });
+
+    return { questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function createQuestion(params: CreateQuestionParams) {
   // make an async
   await connectToDatabase();
   const session = await mongoose.startSession();
 
   try {
-    const { title, content, tags, author } = params;
+    const { title, content, tags, author, path } = params;
 
     await session.startTransaction();
 
@@ -49,6 +74,8 @@ export async function createQuestion(params: any) {
 
     await session.commitTransaction();
     session.endSession();
+
+    revalidatePath(path);
     // const questions = await Question.find().populate("tags");
     // console.log(JSON.stringify(questions, null, 2));
     // const result = await Question.findByIdAndUpdate(question[0]._id, {

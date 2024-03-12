@@ -5,74 +5,11 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constant/filters";
+import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-export default function Home() {
-  const questions = [
-    {
-      _id: "1",
-      title: "How to optimize website performance?",
-      tags: [
-        { _id: "1", name: "Web Development" },
-        { _id: "2", name: "Performance" },
-      ],
-      author: {
-        _id: "1",
-        name: "John Doe",
-        picture: "/assets/icons/account.svg",
-      },
-      upvotes: 15,
-      views: 120,
-      answers: [
-        {
-          /* answer objects can be added here */
-        },
-      ],
-      createdAt: new Date("2024-03-02T10:30:00"),
-    },
-    {
-      _id: "2",
-      title: "Best practices for securing REST APIs?",
-      tags: [
-        { _id: "3", name: "Security" },
-        { _id: "4", name: "APIs" },
-      ],
-      author: {
-        _id: "2",
-        name: "Jane Smith",
-        picture: "/assets/icons/account.svg",
-      },
-      upvotes: 2100000,
-      views: 500000,
-      answers: [
-        {
-          /* answer objects can be added here */
-        },
-      ],
-      createdAt: new Date("2024-03-04T09:15:00"),
-    },
-    {
-      _id: "3",
-      title: "How to start a career in data science?",
-      tags: [
-        { _id: "5", name: "Data Science" },
-        { _id: "6", name: "Career" },
-      ],
-      author: {
-        _id: "3",
-        name: "Alice Johnson",
-        picture: "/assets/icons/account.svg",
-      },
-      upvotes: 3500,
-      views: 150,
-      answers: [
-        {
-          /* answer objects can be added here */
-        },
-      ],
-      createdAt: new Date("2024-03-04T09:15:00"),
-    },
-  ];
+export default async function Home() {
+  const result = await getQuestions({});
 
   return (
     <>
@@ -107,9 +44,19 @@ export default function Home() {
         <HomeFilters />
 
         <div className=" mt-2 flex flex-1 flex-col  gap-6">
-          {questions.length > 0 ? (
-            questions.map((question) => (
-              <QuestionCard key={question._id} question={question} />
+          {result.questions.length > 0 ? (
+            result.questions.map((question) => (
+              <QuestionCard
+                key={question._id}
+                _id={question._id}
+                title={question.title}
+                tags={question.tags}
+                author={question.author}
+                upvotes={question.upvotes}
+                views={question.views}
+                answers={question.answers}
+                createdAt={question.createdAt}
+              />
             ))
           ) : (
             // <HomeCard questions={questions} />

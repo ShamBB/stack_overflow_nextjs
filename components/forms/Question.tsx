@@ -53,6 +53,7 @@ export default function Question({ mongoseUserId }: Props) {
         content: values.explanation,
         tags: values.tags,
         author: JSON.parse(mongoseUserId),
+        path: pathname,
       });
 
       router.push("/");
