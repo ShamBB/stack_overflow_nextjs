@@ -11,7 +11,13 @@ import { useTheme } from "@/context/ThemeProvider";
 import Image from "next/image";
 import { themes } from "@/constant";
 const Theme = () => {
-  const { mode, setMode } = useTheme();
+  const themeContext = useTheme();
+
+  if (!themeContext) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+
+  const { mode, setMode } = themeContext;
 
   function handleChangeTheme(modeValue: string) {
     setMode(modeValue);
