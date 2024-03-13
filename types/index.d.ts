@@ -45,4 +45,9 @@ export interface BadgeCounts {
   BRONZE: number;
 }
 
+export interface ThemeContextType {
+  mode: string;
+  setMode: (mode: string) => void;
+}
+
 export type BadgeCriteriaType = keyof typeof BADGE_CRITERIA;

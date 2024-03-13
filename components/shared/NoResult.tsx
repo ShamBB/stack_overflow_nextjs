@@ -13,7 +13,7 @@ interface NoResultProps {
 }
 
 const NoResult = ({ title, description, link, linkTitle }: NoResultProps) => {
-  const { mode } = useTheme();
+  const { mode } = useTheme() || {};
   return (
     <div className="mt-10 flex flex-col items-center justify-center gap-7">
       <Image
