@@ -4,7 +4,7 @@ export default authMiddleware({
   // Routes that can be accessed while signed out
   publicRoutes: [
     "/",
-    "/api/webhook",
+    "/api/webhooks(.*)",
     "/question/:id",
     "/tags",
     "/tags/:id",
@@ -14,7 +14,7 @@ export default authMiddleware({
   ],
   // Routes that can always be accessed, and have
   // no authentication information
-  ignoredRoutes: ["/api/webhook", "/api/chatgpt"],
+  ignoredRoutes: ["/api/chatgpt"],
 });
 
 export const config = {
