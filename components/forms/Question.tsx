@@ -64,7 +64,7 @@ export default function Question({ mongoseUserId }: Props) {
     }
   }
 
-  const handleEditorChange = (content, editor) => {
+  const handleEditorChange = (content: string, editor: any) => {
     form.setValue("explanation", editor.getContent({ format: "text" }).trim());
   };
 
