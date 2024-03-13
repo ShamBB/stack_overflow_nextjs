@@ -85,8 +85,6 @@ export async function createQuestion(params: CreateQuestionParams) {
     // const result = await Question.findOne({
     //   _id: JSON.stringify(question[0]._id),
     // });
-
-    // console.log(result, "result");
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
