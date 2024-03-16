@@ -43,7 +43,11 @@ const QuestionCard = ({
       <ul className="mb-6 mt-3.5 flex flex-wrap gap-2">
         {tags.map((tagObj) => {
           return (
-            <RenderTag key={tagObj._id} _id={tagObj._id} name={tagObj.name} />
+            <RenderTag
+              key={tagObj._id}
+              _id={tagObj._id?.toString()}
+              name={tagObj.name}
+            />
           );
         })}
       </ul>
