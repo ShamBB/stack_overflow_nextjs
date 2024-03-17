@@ -1,7 +1,7 @@
-"use client";
 import React from "react";
 import { Badge } from "../ui/badge";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+// import { useRouter } from "next/navigation";
 
 interface prop {
   _id: string;
@@ -11,15 +11,15 @@ interface prop {
 }
 
 const RenderTag = ({ _id, name, totalQuestions, showCount }: prop) => {
-  const { push } = useRouter();
-  const handleClickTag = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    push(`tags/${_id}`);
-  };
+  // const { push } = useRouter();
+  // const handleClickTag = (event: React.MouseEvent<HTMLDivElement>) => {
+  //   event.stopPropagation();
+  //   push(`tags/${_id}`);
+  // };
 
   return (
-    <div
-      onClick={handleClickTag}
+    <Link
+      href={`/tag/${_id}`}
       className="flex cursor-pointer items-baseline justify-between gap-2"
     >
       <Badge
@@ -31,7 +31,7 @@ const RenderTag = ({ _id, name, totalQuestions, showCount }: prop) => {
       {showCount && (
         <p className="text-dark500_light700 small-medium">{totalQuestions}</p>
       )}
-    </div>
+    </Link>
   );
 };
 

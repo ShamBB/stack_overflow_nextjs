@@ -17,15 +17,13 @@ interface IuserCardProps {
 const UserCard = async ({ user }: IuserCardProps) => {
   const interactedTags = await getTopInteractedTags({ userId: user._id });
   return (
-    <Link
-      href={`/profile/${user.clerkId}`}
-      className="shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]"
-    >
+    <Link passHref legacyBehavior href={`/profile/${user.clerkId}`}>
       <article
         className=" 
-        background-light900_dark200 light-border
-        flex w-full flex-col
-        items-center justify-center gap-5 rounded-2xl p-8 text-center"
+        shadow-light100_darknone background-light900_dark200 light-border flex
+        w-full
+        cursor-pointer flex-col items-center
+        justify-center gap-5 rounded-2xl p-8 text-center max-xs:min-w-full xs:w-[260px]"
       >
         <Image
           src={user.picture || "/assets/images/default-profile.png"}

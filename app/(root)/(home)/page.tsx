@@ -65,7 +65,7 @@ export default async function Home() {
               description="Be the first to break the silence! 🚀 Ask a Question and kickstart the
         discussion. our query could be the next big thing others learn from.
         Get involved! 💡"
-              link="#"
+              link="/ask-question"
               linkTitle="Ask a Question"
             />
           )}

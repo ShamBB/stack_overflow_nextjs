@@ -7,7 +7,6 @@ import Link from "next/link";
 
 const Community = async () => {
   const allUsers = await getAllUsers({});
-  console.log(allUsers);
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Users</h1>
@@ -37,10 +36,9 @@ const Community = async () => {
           ) : (
             <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
               <p>No users yet</p>
-              <Link
-                href="/sign-up"
-                className="mt-1 font-bold text-accent-blue"
-              ></Link>
+              <Link href="/sign-up" className="mt-1 font-bold text-accent-blue">
+                Sign up to be the first user
+              </Link>
             </div>
           )}
         </section>
@@ -50,7 +48,3 @@ const Community = async () => {
 };
 
 export default Community;
-
-// {allUsers?.map((userObj) => {
-//   return <UserCard key={userObj._id} user={userObj} />;
-// })}
