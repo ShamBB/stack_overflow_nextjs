@@ -65,7 +65,7 @@ export default function Question({ mongoseUserId }: Props) {
   }
 
   const handleEditorChange = (content: string, editor: any) => {
-    form.setValue("explanation", editor.getContent({ format: "text" }).trim());
+    form.setValue("explanation", editor.getContent().trim());
   };
 
   function handleInputKeyDown(

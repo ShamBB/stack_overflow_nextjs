@@ -4,9 +4,14 @@ import { IQuestion, Question } from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import { Tag } from "@/database/tag.model";
 import mongoose from "mongoose";
-import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
+import {
+  CreateQuestionParams,
+  GetQuestionByIdParams,
+  GetQuestionsParams,
+} from "./shared.types";
 import { User } from "@/database/user.mode";
 import { revalidatePath } from "next/cache";
+import console from "console";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -93,4 +98,24 @@ export async function createQuestion(params: CreateQuestionParams) {
   }
 }
 
-// insert tag, check if tag exists, if not create tag, then insert question
+export async function getQuestionById(params: GetQuestionByIdParams) {
+  try {
+    connectToDatabase();
+
+    const question = await Question.findById(params.questionId)
+      .populate({
+        path: "tags",
+        model: Tag,
+        select: "_id name",
+      })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id clerkId name picture",
+      });
+    return question;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
