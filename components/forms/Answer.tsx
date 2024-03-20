@@ -18,12 +18,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { createAnswer } from "@/lib/actions/answer.action";
 
-interface prop {
+interface Props {
   questionId: string;
   mongoseUserId: string;
 }
 
-const Answer = ({ questionId, mongoseUserId }: prop) => {
+const Answer = ({ questionId, mongoseUserId }: Props) => {
   const { mode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
@@ -36,7 +36,7 @@ const Answer = ({ questionId, mongoseUserId }: prop) => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof AnswerSchema>) {
+  async function handleCreateAnswer(values: z.infer<typeof AnswerSchema>) {
     setIsSubmitting(true);
     try {
       await createAnswer({
@@ -45,6 +45,13 @@ const Answer = ({ questionId, mongoseUserId }: prop) => {
         author: JSON.parse(mongoseUserId),
         path: pathname,
       });
+      form.reset();
+
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+
+        editor.setContent("");
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -81,7 +88,7 @@ const Answer = ({ questionId, mongoseUserId }: prop) => {
       </div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleCreateAnswer)}
           className="mt-6 flex w-full flex-col gap-10"
         >
           <FormField

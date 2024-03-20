@@ -84,7 +84,7 @@ const page = async ({ params }: { params: { id: string } }) => {
         ))}
       </div>
       <Answer
-        questionId={JSON.stringify(params.id)}
+        questionId={JSON.stringify(question._id)}
         mongoseUserId={JSON.stringify(mongoUser._id)}
       />
     </>

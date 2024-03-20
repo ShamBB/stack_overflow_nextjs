@@ -34,8 +34,6 @@ export async function createAnswer(params: CreateAnswerParams) {
         $push: { answers: answer[0]._id },
       },
       {
-        new: true,
-        upsert: true,
         session,
       }
     );
@@ -43,13 +41,13 @@ export async function createAnswer(params: CreateAnswerParams) {
     await answer[0].save();
 
     await session.commitTransaction();
-    session.endSession();
 
     revalidatePath(path);
   } catch (error) {
     await session.abortTransaction();
-    session.endSession();
     console.log(error);
     throw error;
+  } finally {
+    session.endSession();
   }
 }

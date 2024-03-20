@@ -78,14 +78,14 @@ export async function createQuestion(params: CreateQuestionParams) {
     await question[0].save();
 
     await session.commitTransaction();
-    session.endSession();
 
     revalidatePath(path);
   } catch (error) {
     await session.abortTransaction();
-    session.endSession();
     console.log(error);
     throw error;
+  } finally {
+    session.endSession();
   }
 }
 
