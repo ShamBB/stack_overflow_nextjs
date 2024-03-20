@@ -81,15 +81,6 @@ export async function createQuestion(params: CreateQuestionParams) {
     session.endSession();
 
     revalidatePath(path);
-    // const questions = await Question.find().populate("tags");
-    // console.log(JSON.stringify(questions, null, 2));
-    // const result = await Question.findByIdAndUpdate(question[0]._id, {
-    //   $push: { tags: { $each: tagDocuments } },
-    // });
-    // console.log(JSON.stringify(question[0]._id));
-    // const result = await Question.findOne({
-    //   _id: JSON.stringify(question[0]._id),
-    // });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
