@@ -3,7 +3,7 @@
 import { Question } from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
-import { CreateAnswerParams } from "./shared.types";
+import { CreateAnswerParams, GetAnswersParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import console from "console";
 import { IAnswer, Answer } from "@/database/answer.model";
@@ -49,5 +49,18 @@ export async function createAnswer(params: CreateAnswerParams) {
     throw error;
   } finally {
     session.endSession();
+  }
+}
+
+export async function getAnswers(params: GetAnswersParams) {
+  try {
+    const { questionId } = params;
+    const answers = await Answer.find({ question: questionId })
+      .populate("author", "_id clerkId name picture")
+      .sort({ createdAt: -1 });
+    return answers;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

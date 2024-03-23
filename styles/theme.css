@@ -199,6 +199,13 @@
     background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
   }
 
+  .primary-text-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .dark-gradient {
     background: linear-gradient(
       232deg,
