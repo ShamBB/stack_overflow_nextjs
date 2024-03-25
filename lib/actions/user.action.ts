@@ -12,6 +12,7 @@ import {
 import { revalidatePath } from "next/cache";
 import console, { error } from "console";
 import { Question } from "@/database/question.model";
+import { Tag } from "@/database/tag.model";
 
 export async function getUserById(params: any) {
   try {
@@ -109,6 +110,28 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
     revalidatePath(path);
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserInfoWithSavedQuestions() {
+  try {
+    await connectToDatabase(); // Make sure you're connected to the database
+
+    const userInfo = await User.findById("65f17403ca3e729a8fba921d")
+      .populate({
+        path: "saved",
+        model: Question,
+        populate: {
+          path: "tags", // Further populate tags of each question
+          model: Tag,
+        },
+      })
+      .exec(); // Execute the query
+    console.log(userInfo.saved[0].tags);
+    return userInfo; // This will have the user info along with saved questions and their tags populated
+  } catch (error) {
+    console.error(error);
     throw error;
   }
 }

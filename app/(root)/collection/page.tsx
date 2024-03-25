@@ -6,11 +6,12 @@ import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constant/filters";
 import { getQuestions } from "@/lib/actions/question.action";
+import { getUserInfoWithSavedQuestions } from "@/lib/actions/user.action";
 import Link from "next/link";
 
 export default async function Collection() {
   const result = await getQuestions({});
-
+  const test = await getUserInfoWithSavedQuestions();
   return (
     <>
       <div
