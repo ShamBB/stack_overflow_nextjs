@@ -6,6 +6,7 @@ import { getAnswers } from "@/lib/actions/answer.action";
 import Filter from "./Filter";
 import Link from "next/link";
 import Image from "next/image";
+import Votes from "./Votes";
 
 interface Props {
   questionId: string;
@@ -64,32 +65,16 @@ const AllAnswers = async ({
                   </p>
                 </div>
               </Link>
-              <div className="flex justify-end gap-[10px]">
-                <div className="flex items-center justify-center gap-[6px]">
-                  <Image
-                    src="/assets/icons/upvote.svg"
-                    alt="arrow up icon"
-                    height={18}
-                    width={18}
-                    className="cursor-pointer"
-                  ></Image>
-                  <p className="subtle-medium text-dark400_light900 background-light700_dark400 flex h-[18px]  min-w-[18px] items-center justify-center rounded-sm p-1">
-                    {formatNumberWithExtension(1000)}
-                  </p>
-                </div>
-                <div className="flex items-center justify-center gap-[6px]">
-                  <Image
-                    src="/assets/icons/downvote.svg"
-                    alt="arrow up icon"
-                    height={18}
-                    width={18}
-                    className="cursor-pointer"
-                  ></Image>
-                  <p className="subtle-medium text-dark400_light900 background-light700_dark400 flex h-[18px]  min-w-[18px] items-center justify-center rounded-sm p-1">
-                    {formatNumberWithExtension(1000)}
-                  </p>
-                </div>
-              </div>
+
+              <Votes
+                itemId={JSON.stringify(answerObj._id)}
+                userId={JSON.stringify(userId)}
+                upvotes={answerObj.upvotes.length}
+                hasupVoted={answerObj.upvotes.includes(userId)}
+                downvotes={answerObj.downvotes.length}
+                hasdownVoted={answerObj.downvotes.includes(userId)}
+                type="Answer"
+              />
             </div>
             <ParseHTML data={answerObj.content} />
           </article>
