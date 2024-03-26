@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatNumberWithExtension, multiFormatDateString } from "@/lib/utils";
 import RenderTag from "../shared/RenderTag";
 import Metric from "../shared/Metric";
+import Image from "next/image";
 
 interface QuestionCardProps {
   _id: string;
@@ -17,6 +18,7 @@ interface QuestionCardProps {
   views: number;
   answers: Array<object>;
   createdAt: Date;
+  hasSaved?: boolean;
 }
 
 const QuestionCard = ({
@@ -28,17 +30,28 @@ const QuestionCard = ({
   views,
   answers,
   createdAt,
+  hasSaved,
 }: QuestionCardProps) => {
   return (
     <div className="card-wrapper rounded-[10px] px-11 py-9 sm:px-11">
       <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
         {multiFormatDateString(createdAt.toISOString())}
       </span>
-      <Link href={`/question/${_id}`}>
-        <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 ">
-          {title}
-        </h3>
-      </Link>
+      <div className="flex justify-between">
+        <Link href={`/question/${_id}`}>
+          <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 ">
+            {title}
+          </h3>
+        </Link>
+        {hasSaved && (
+          <Image
+            src="/assets/icons/star-filled.svg"
+            width={18}
+            height={18}
+            alt="star"
+          />
+        )}
+      </div>
 
       <ul className="mb-6 mt-3.5 flex flex-wrap gap-2">
         {tags.map((tagObj) => {

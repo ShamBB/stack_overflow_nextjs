@@ -11,39 +11,21 @@ import Link from "next/link";
 
 export default async function Collection() {
   const result = await getQuestions({});
-  const test = await getUserInfoWithSavedQuestions();
+  const test = await getUserInfoWithSavedQuestions({});
+  console.log(test);
   return (
     <>
       <div
         className="flex w-full flex-col-reverse 
         justify-between gap-4 sm:flex-row sm:items-center"
       >
-        <h1 className="h1-bold text-dark100_light900">All Questions</h1>
-        <Link href="/ask-question" className="flex justify-end max-sm:w-full">
-          <Button className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900">
-            Ask a Question
-          </Button>
-        </Link>
+        <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>
       </div>
 
       <div
         className="mt-11 flex flex-col justify-between gap-7 
       max-sm:flex-col md:items-stretch"
       >
-        <LocalSearchBar
-          route="/"
-          iconPosition="left"
-          imgSrc="/assets/icons/search.svg"
-          placeholder="Search for Questions Here..."
-          otherClasses="flex-1"
-        />
-        <Filter
-          filters={HomePageFilters}
-          otherClasses="min-h-[56px] sm:min-w-[170px]"
-          containerClasses="hidden max-md:flex"
-        />
-        <HomeFilters />
-
         <div className=" mt-2 flex flex-1 flex-col  gap-6">
           {result.questions.length > 0 ? (
             result.questions.map((question) => (
@@ -57,6 +39,7 @@ export default async function Collection() {
                 views={question.views}
                 answers={question.answers}
                 createdAt={question.createdAt}
+                hasSaved={true}
               />
             ))
           ) : (

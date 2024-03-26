@@ -32,7 +32,7 @@ const Votes = ({
   type,
 }: Props) => {
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleSave = async () => {
     if (!userId) {

@@ -6,6 +6,7 @@ import {
   CreateUserParams,
   DeleteUserParams,
   GetAllUsersParams,
+  GetSavedQuestionsParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
@@ -114,11 +115,15 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
   }
 }
 
-export async function getUserInfoWithSavedQuestions() {
+export async function getUserInfoWithSavedQuestions(
+  params: GetSavedQuestionsParams
+) {
   try {
     await connectToDatabase(); // Make sure you're connected to the database
 
-    const userInfo = await User.findById("65f17403ca3e729a8fba921d")
+    const userInfo = await User.find({
+      clerkId: "user_2dd0XrY9JbHMTr4CZQAKwDoRo6l",
+    })
       .populate({
         path: "saved",
         model: Question,
@@ -128,7 +133,7 @@ export async function getUserInfoWithSavedQuestions() {
         },
       })
       .exec(); // Execute the query
-    console.log(userInfo.saved[0].tags);
+    console.log(userInfo);
     return userInfo; // This will have the user info along with saved questions and their tags populated
   } catch (error) {
     console.error(error);
