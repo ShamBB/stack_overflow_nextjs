@@ -14,11 +14,12 @@ interface QuestionCardProps {
     name: string;
     picture: string;
   };
-  upvotes: number;
+  upvotes: string[];
   views: number;
   answers: Array<object>;
   createdAt: Date;
   hasSaved?: boolean;
+  userId?: string;
 }
 
 const QuestionCard = ({
@@ -31,6 +32,7 @@ const QuestionCard = ({
   answers,
   createdAt,
   hasSaved,
+  userId,
 }: QuestionCardProps) => {
   return (
     <div className="card-wrapper rounded-[10px] px-11 py-9 sm:px-11">
@@ -49,6 +51,7 @@ const QuestionCard = ({
             width={18}
             height={18}
             alt="star"
+            className="cursor-pointer"
           />
         )}
       </div>
@@ -76,7 +79,7 @@ const QuestionCard = ({
           <Metric
             imgUrl="/assets/icons/like.svg"
             alt="Upvotes"
-            value={formatNumberWithExtension(upvotes)}
+            value={formatNumberWithExtension(upvotes.length)}
             title=" Votes"
             textStyle="small-regular text-dark400_light800"
           />

@@ -14,6 +14,7 @@ import { revalidatePath } from "next/cache";
 import console, { error } from "console";
 import { Question } from "@/database/question.model";
 import { Tag } from "@/database/tag.model";
+import { FilterQuery } from "mongoose";
 
 export async function getUserById(params: any) {
   try {
@@ -115,26 +116,40 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
   }
 }
 
-export async function getUserInfoWithSavedQuestions(
-  params: GetSavedQuestionsParams
-) {
+export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     await connectToDatabase(); // Make sure you're connected to the database
 
-    const userInfo = await User.find({
-      clerkId: "user_2dd0XrY9JbHMTr4CZQAKwDoRo6l",
-    })
-      .populate({
-        path: "saved",
-        model: Question,
-        populate: {
+    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+    const query: FilterQuery<typeof Question> = searchQuery
+      ? { title: { $regex: new RegExp(searchQuery, "i") } }
+      : {};
+    const userInfo = await User.findOne({
+      clerkId,
+    }).populate({
+      path: "saved",
+      model: Question,
+      match: query,
+      options: {
+        sort: { createdAt: -1 },
+      },
+      populate: [
+        {
           path: "tags", // Further populate tags of each question
           model: Tag,
+          select: "_id name",
         },
-      })
-      .exec(); // Execute the query
-    console.log(userInfo);
-    return userInfo; // This will have the user info along with saved questions and their tags populated
+        {
+          path: "author",
+          model: User,
+          select: "_id name picture clerkId",
+        },
+      ],
+    }); // Execute the query
+    if (!userInfo) {
+      throw error("User not found");
+    }
+    return { savedQuestion: userInfo.saved }; // This will have the user info along with saved questions and their tags populated
   } catch (error) {
     console.error(error);
     throw error;
