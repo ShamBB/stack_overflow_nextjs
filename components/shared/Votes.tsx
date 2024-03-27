@@ -1,5 +1,6 @@
 "use client";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
+import { viewQuestion } from "@/lib/actions/interaction.action";
 import {
   downvoteQuestion,
   upvoteQuestion,
@@ -8,7 +9,7 @@ import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { formatNumberWithExtension } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 interface Props {
   itemId: string;
@@ -32,7 +33,7 @@ const Votes = ({
   type,
 }: Props) => {
   const pathname = usePathname();
-  // const router = useRouter();
+  const router = useRouter();
 
   const handleSave = async () => {
     if (!userId) {
@@ -90,6 +91,15 @@ const Votes = ({
       }
     }
   };
+  useEffect(() => {
+    if (type === "Question") {
+      // viewQuestion({
+      //   questionId: JSON.parse(itemId),
+      //   userId: userId ? JSON.parse(userId) : undefined,
+      // });
+      console.log(type);
+    }
+  }, []);
 
   return (
     <div className="flex justify-end gap-5">
