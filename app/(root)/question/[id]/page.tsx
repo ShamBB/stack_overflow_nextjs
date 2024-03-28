@@ -10,14 +10,12 @@ import { formatNumberWithExtension, multiFormatDateString } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import React from "react";
 
 const page = async ({ params }: { params: { id: string } }) => {
   const { userId } = auth();
 
-  if (!userId) redirect("/sign-in");
-  const mongoUser = await getUserById({ userId });
+  const mongoUser = userId ? await getUserById({ userId }) : undefined;
 
   const question = await getQuestionById({ questionId: params.id });
   return (
@@ -45,11 +43,11 @@ const page = async ({ params }: { params: { id: string } }) => {
           <div className="flex justify-end">
             <Votes
               itemId={JSON.stringify(question._id)}
-              userId={JSON.stringify(mongoUser._id)}
+              userId={JSON.stringify(mongoUser?._id)}
               upvotes={question.upvotes.length}
-              hasupVoted={question.upvotes.includes(mongoUser._id)}
+              hasupVoted={question.upvotes.includes(mongoUser?._id)}
               downvotes={question.downvotes.length}
-              hasdownVoted={question.downvotes.includes(mongoUser._id)}
+              hasdownVoted={question.downvotes.includes(mongoUser?._id)}
               hasSaved={mongoUser?.saved.includes(question._id)}
               type="Question"
             />
@@ -98,13 +96,13 @@ const page = async ({ params }: { params: { id: string } }) => {
 
       <AllAnswers
         questionId={params.id}
-        userId={mongoUser._id}
+        userId={mongoUser?._id}
         totalAnswers={question.answers.length}
       />
 
       <Answer
         questionId={JSON.stringify(question._id)}
-        mongoseUserId={JSON.stringify(mongoUser._id)}
+        mongoseUserId={JSON.stringify(mongoUser?._id)}
       />
     </>
   );

@@ -99,7 +99,7 @@ const Votes = ({
         path: pathname,
       });
     }
-  }, [type, itemId, userId, pathname]);
+  }, [type, itemId, userId]);
 
   return (
     <div className="flex justify-end gap-5">

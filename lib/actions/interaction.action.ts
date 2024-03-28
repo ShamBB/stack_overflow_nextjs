@@ -11,16 +11,15 @@ export async function viewQuestion(params: ViewQuestionParams) {
 
   try {
     const { questionId, userId, path } = params;
-
     await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } });
-
+    revalidatePath(path);
     if (userId) {
       const existingInteraction = await Interaction.findOne({
         user: userId,
         action: "view",
         question: questionId,
       });
-      revalidatePath(path);
+
       if (existingInteraction) return console.log("User has already viewed");
 
       await Interaction.create({
