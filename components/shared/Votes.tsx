@@ -93,13 +93,13 @@ const Votes = ({
   };
   useEffect(() => {
     if (type === "Question") {
-      // viewQuestion({
-      //   questionId: JSON.parse(itemId),
-      //   userId: userId ? JSON.parse(userId) : undefined,
-      // });
-      console.log(type);
+      viewQuestion({
+        questionId: JSON.parse(itemId),
+        userId: userId ? JSON.parse(userId) : undefined,
+        path: pathname,
+      });
     }
-  }, []);
+  }, [type, itemId, userId, pathname]);
 
   return (
     <div className="flex justify-end gap-5">

@@ -4,12 +4,13 @@ import { Question } from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import { ViewQuestionParams } from "./shared.types";
 import { Interaction } from "@/database/interaction.model";
+import { revalidatePath } from "next/cache";
 
 export async function viewQuestion(params: ViewQuestionParams) {
   await connectToDatabase();
 
   try {
-    const { questionId, userId } = params;
+    const { questionId, userId, path } = params;
 
     await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } });
 
@@ -19,7 +20,7 @@ export async function viewQuestion(params: ViewQuestionParams) {
         action: "view",
         question: questionId,
       });
-
+      revalidatePath(path);
       if (existingInteraction) return console.log("User has already viewed");
 
       await Interaction.create({
