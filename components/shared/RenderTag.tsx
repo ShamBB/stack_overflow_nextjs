@@ -19,7 +19,7 @@ const RenderTag = ({ _id, name, totalQuestions, showCount }: prop) => {
 
   return (
     <Link
-      href={`/tag/${_id}`}
+      href={`/tags/${_id}`}
       className="flex cursor-pointer items-baseline justify-between gap-2"
     >
       <Badge

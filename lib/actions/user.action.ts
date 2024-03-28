@@ -147,7 +147,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       ],
     }); // Execute the query
     if (!userInfo) {
-      throw error("User not found");
+      throw new Error("User not found");
     }
     return { savedQuestion: userInfo.saved }; // This will have the user info along with saved questions and their tags populated
   } catch (error) {

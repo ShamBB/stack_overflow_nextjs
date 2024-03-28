@@ -20,7 +20,7 @@ const TagCard = ({ tag }: IProps) => {
         max-xs:min-w-full xs:w-[260px]"
       >
         <Link
-          href={`/tag/${tag._id}`}
+          href={`/tags/${tag._id}`}
           className="background-light800_dark400 text-dark300_light900
         paragraph-semibold rounded px-5 py-[6px] "
         >
