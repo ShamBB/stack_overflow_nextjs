@@ -70,7 +70,7 @@ const QuestionCard = ({
           alt="user"
           value={author.name}
           title={` - asked ${multiFormatDateString(createdAt.toISOString())}`}
-          href={`/profiule/${author._id}`}
+          href={`/profile/${author._id}`}
           iasAuthor
           textStyle="body-medium text-dark400_light700"
         />

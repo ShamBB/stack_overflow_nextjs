@@ -68,3 +68,23 @@ export function formatNumberWithExtension(number: number): string {
 
   return result;
 }
+
+export function getJoinedDate(date: Date): string {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  return `${month} ${year}`;
+}
