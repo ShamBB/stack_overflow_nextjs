@@ -213,4 +213,10 @@
       rgba(19, 22, 28, 0.7) 100%
     );
   }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1.1875rem;
+  }
 }

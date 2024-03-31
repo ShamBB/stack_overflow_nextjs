@@ -13,6 +13,7 @@ interface QuestionCardProps {
     _id: string;
     name: string;
     picture: string;
+    clerkId: string;
   };
   upvotes: string[];
   views: number;
@@ -70,7 +71,7 @@ const QuestionCard = ({
           alt="user"
           value={author.name}
           title={` - asked ${multiFormatDateString(createdAt.toISOString())}`}
-          href={`/profile/${author._id}`}
+          href={`/profile/${author.clerkId}`}
           iasAuthor
           textStyle="body-medium text-dark400_light700"
         />
