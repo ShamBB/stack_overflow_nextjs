@@ -211,3 +211,30 @@ export async function getUserQuestions(params: GetUserStatsParams) {
     throw error;
   }
 }
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 0 } = params;
+
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+    const answers = await Answer.find({ author: userId })
+      .populate({
+        path: "question",
+        model: Question,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+
+      .sort({ upvotes: -1 })
+      .skip(page > 0 ? (page - 1) * pageSize : 0)
+      .limit(pageSize);
+
+    return { totalAnswers, answers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

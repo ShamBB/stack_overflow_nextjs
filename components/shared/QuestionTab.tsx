@@ -14,7 +14,7 @@ const QuestionTab = async ({ searchParams, clerkId, userId }: Props) => {
     page: 1,
   });
   return (
-    <div className=" mt-5 flex flex-1 flex-col gap-6">
+    <>
       {question.questions.map((question) => {
         return (
           <QuestionCard
@@ -30,7 +30,7 @@ const QuestionTab = async ({ searchParams, clerkId, userId }: Props) => {
           />
         );
       })}
-    </div>
+    </>
   );
 };
 
