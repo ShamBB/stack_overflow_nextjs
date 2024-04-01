@@ -25,6 +25,7 @@ interface Props {
 
 const Answer = ({ questionId, mongoseUserId }: Props) => {
   const { mode } = useTheme();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
   const pathname = usePathname();
