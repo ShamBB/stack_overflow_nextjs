@@ -30,7 +30,7 @@ export default async function TagDetail({ params, searchParams }: URLProps) {
 
         <div className=" mt-2 flex flex-1 flex-col  gap-6">
           {result.questions.length > 0 ? (
-            result.questions.map((question: IQuestion) => (
+            result.questions.map((question: any) => (
               <QuestionCard
                 key={question._id}
                 _id={question._id}
