@@ -36,7 +36,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
-    const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
     const tags = await Tag.find({}).sort({ createdAt: -1 });
     return tags;
   } catch (error) {
@@ -48,7 +48,7 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
   try {
     await connectToDatabase(); // Make sure you're connected to the database
 
-    const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+    const { tagId, searchQuery } = params;
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
     const query: FilterQuery<typeof Question> = searchQuery

@@ -1,5 +1,5 @@
 import { AnswerFilters } from "@/constant/filters";
-import { formatDateString, formatNumberWithExtension } from "@/lib/utils";
+import { formatDateString } from "@/lib/utils";
 import React from "react";
 import ParseHTML from "./ParseHTML";
 import { getAnswers } from "@/lib/actions/answer.action";
