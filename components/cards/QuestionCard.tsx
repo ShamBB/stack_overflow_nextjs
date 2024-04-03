@@ -3,7 +3,8 @@ import Link from "next/link";
 import { formatNumberWithExtension, multiFormatDateString } from "@/lib/utils";
 import RenderTag from "../shared/RenderTag";
 import Metric from "../shared/Metric";
-import Image from "next/image";
+import EditDeleteAction from "../shared/EditDeleteAction";
+import { SignedIn } from "@clerk/nextjs";
 
 interface QuestionCardProps {
   _id: string;
@@ -20,7 +21,7 @@ interface QuestionCardProps {
   answers: Array<object>;
   createdAt: Date;
   hasSaved?: boolean;
-  userId?: string;
+  clerkId?: string | null;
 }
 
 const QuestionCard = ({
@@ -33,28 +34,25 @@ const QuestionCard = ({
   answers,
   createdAt,
   hasSaved,
-  userId,
+  clerkId,
 }: QuestionCardProps) => {
+  const showButtonAction = clerkId && clerkId === author.clerkId;
   return (
     <div className="card-wrapper rounded-[10px] px-11 py-9 sm:px-11">
       <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
         {multiFormatDateString(createdAt.toISOString())}
       </span>
-      <div className="flex justify-between">
+      <div className="flex w-full justify-between align-baseline max-xs:flex-col-reverse">
         <Link href={`/question/${_id}`}>
           <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 ">
             {title}
           </h3>
         </Link>
-        {hasSaved && (
-          <Image
-            src="/assets/icons/star-filled.svg"
-            width={18}
-            height={18}
-            alt="star"
-            className="cursor-pointer"
-          />
-        )}
+        <SignedIn>
+          {showButtonAction && (
+            <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <ul className="mb-6 mt-3.5 flex flex-wrap gap-2">

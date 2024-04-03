@@ -6,6 +6,7 @@ import { Tag } from "@/database/tag.model";
 import mongoose from "mongoose";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
@@ -13,6 +14,8 @@ import {
 import { User } from "@/database/user.mode";
 import { revalidatePath } from "next/cache";
 import console from "console";
+import { Answer } from "@/database/answer.model";
+import { Interaction } from "@/database/interaction.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -168,5 +171,39 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  // make an async
+  await connectToDatabase();
+  const session = await mongoose.startSession();
+
+  try {
+    const { questionId, path } = params;
+
+    await session.startTransaction();
+
+    await Question.deleteOne({ _id: questionId });
+    await Answer.deleteMany({ question: questionId });
+    await Interaction.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    );
+    await User.updateMany(
+      { saved: questionId },
+      { $pull: { saved: questionId } }
+    );
+
+    await session.commitTransaction();
+
+    revalidatePath(path);
+  } catch (error) {
+    await session.abortTransaction();
+    console.log(error);
+    throw error;
+  } finally {
+    session.endSession();
   }
 }

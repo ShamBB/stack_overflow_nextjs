@@ -9,9 +9,9 @@ import { redirect } from "next/navigation";
 
 export default async function Collection() {
   // const result = await getQuestions({});
-  const { userId } = auth();
-  if (!userId) redirect("/sign-in");
-  const result = await getSavedQuestions({ clerkId: userId });
+  const { userId: clerkId } = auth();
+  if (!clerkId) redirect("/sign-in");
+  const result = await getSavedQuestions({ clerkId });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>
@@ -46,6 +46,7 @@ export default async function Collection() {
                 answers={question.answers}
                 createdAt={question.createdAt}
                 hasSaved
+                clerkId={clerkId}
               />
             ))
           ) : (

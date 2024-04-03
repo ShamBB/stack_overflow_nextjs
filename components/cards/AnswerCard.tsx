@@ -2,8 +2,10 @@ import React from "react";
 import Link from "next/link";
 import { formatNumberWithExtension, multiFormatDateString } from "@/lib/utils";
 import Metric from "../shared/Metric";
+import EditDeleteAction from "../shared/EditDeleteAction";
+import { SignedIn } from "@clerk/nextjs";
 
-interface QuestionCardProps {
+interface AnswerCardProps {
   clerkId: string | null | undefined;
   _id: string;
   question: {
@@ -14,6 +16,7 @@ interface QuestionCardProps {
     _id: string;
     name: string;
     picture: string;
+    clerkId: string;
   };
   upvotes: string[];
   createdAt: Date;
@@ -26,7 +29,8 @@ const AnswerCard = ({
   author,
   upvotes,
   createdAt,
-}: QuestionCardProps) => {
+}: AnswerCardProps) => {
+  const showButtonAction = clerkId && clerkId === author.clerkId;
   return (
     <div className="card-wrapper rounded-[10px] px-11 py-9 sm:px-11">
       <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
@@ -38,6 +42,12 @@ const AnswerCard = ({
             {question.title}
           </h3>
         </Link>
+
+        <SignedIn>
+          {showButtonAction && (
+            <EditDeleteAction type="Answer" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <div className="flex-between mt-6 flex-wrap gap-3">

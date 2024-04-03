@@ -6,11 +6,13 @@ import mongoose from "mongoose";
 import {
   AnswerVoteParams,
   CreateAnswerParams,
+  DeleteAnswerParams,
   GetAnswersParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import console from "console";
 import { IAnswer, Answer } from "@/database/answer.model";
+import { Interaction } from "@/database/interaction.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   // make an async
@@ -126,5 +128,40 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
+
+export async function deleteAnswer(params: DeleteAnswerParams) {
+  // make an async
+  await connectToDatabase();
+  const session = await mongoose.startSession();
+
+  try {
+    const { answerId, path } = params;
+
+    await session.startTransaction();
+
+    const answer = await Answer.findById(answerId);
+
+    if (!answer) {
+      throw new Error("answer not found");
+    }
+
+    await Answer.deleteOne({ _id: answerId });
+    await Interaction.deleteMany({ answer: answerId });
+    await Question.updateMany(
+      { answers: answerId },
+      { $pull: { answers: answerId } }
+    );
+
+    await session.commitTransaction();
+
+    revalidatePath(path);
+  } catch (error) {
+    await session.abortTransaction();
+    console.log(error);
+    throw error;
+  } finally {
+    session.endSession();
   }
 }
