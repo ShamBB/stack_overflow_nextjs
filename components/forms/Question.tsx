@@ -20,17 +20,31 @@ import { Editor } from "@tinymce/tinymce-react";
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
 
-const type: any = "create";
+// const type: any = "create";
 
 interface Props {
   mongoseUserId: string;
+  type: string;
+  title?: string;
+  explanation?: string;
+  tags?: string[];
+  questionId?: string;
+  clerkId?: string | null;
 }
 
-export default function Question({ mongoseUserId }: Props) {
+export default function Question({
+  mongoseUserId,
+  type,
+  title,
+  explanation,
+  tags,
+  questionId,
+  clerkId,
+}: Props) {
   const { mode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -41,24 +55,37 @@ export default function Question({ mongoseUserId }: Props) {
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: title || "",
+      explanation: explanation || "",
+      tags: tags || [],
     },
   });
 
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
     try {
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(mongoseUserId),
-        path: pathname,
-      });
+      if (type === "create") {
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoseUserId),
+          path: pathname,
+        });
 
-      router.push("/");
+        router.push("/");
+      } else if (type === "edit") {
+        if (questionId) {
+          await editQuestion({
+            questionId,
+            title: values.title,
+            content: values.explanation,
+            tags: values.tags,
+            path: pathname,
+          });
+          router.push(`/question/${questionId}`);
+        }
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -158,7 +185,7 @@ export default function Question({ mongoseUserId }: Props) {
                     // @ts-ignore
                     editorRef.current = editor;
                   }}
-                  initialValue=""
+                  initialValue={explanation}
                   onEditorChange={handleEditorChange}
                   init={{
                     height: 500,
@@ -261,7 +288,7 @@ export default function Question({ mongoseUserId }: Props) {
               : "posting..."
             : type === "edit"
             ? "Edit Question"
-            : "ASk a Question"}
+            : "Ask a Question"}
         </Button>
       </form>
     </Form>

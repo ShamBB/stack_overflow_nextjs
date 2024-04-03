@@ -7,13 +7,13 @@ import mongoose from "mongoose";
 import {
   CreateQuestionParams,
   DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
 } from "./shared.types";
 import { User } from "@/database/user.mode";
 import { revalidatePath } from "next/cache";
-import console from "console";
 import { Answer } from "@/database/answer.model";
 import { Interaction } from "@/database/interaction.model";
 
@@ -175,7 +175,6 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
 }
 
 export async function deleteQuestion(params: DeleteQuestionParams) {
-  // make an async
   await connectToDatabase();
   const session = await mongoose.startSession();
 
@@ -184,25 +183,95 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
 
     await session.startTransaction();
 
-    await Question.deleteOne({ _id: questionId });
-    await Answer.deleteMany({ question: questionId });
-    await Interaction.deleteMany({ question: questionId });
+    // Include the session in each database operation
+    await Question.deleteOne({ _id: questionId }).session(session);
+    await Answer.deleteMany({ question: questionId }).session(session);
+    await Interaction.deleteMany({ question: questionId }).session(session);
     await Tag.updateMany(
       { questions: questionId },
-      { $pull: { questions: questionId } }
+      { $pull: { questions: questionId } },
+      { session } // Pass the session here
     );
     await User.updateMany(
       { saved: questionId },
-      { $pull: { saved: questionId } }
+      { $pull: { saved: questionId } },
+      { session } // And here
     );
 
     await session.commitTransaction();
 
-    revalidatePath(path);
+    revalidatePath(path); // Assuming this function call is not a part of the MongoDB operations and does not require a session
   } catch (error) {
     await session.abortTransaction();
-    console.log(error);
-    throw error;
+    console.error(error); // It's a good practice to use console.error for logging errors
+    throw error; // Rethrow the error if you want to handle it further up in the call stack
+  } finally {
+    session.endSession(); // Ensure the session is always ended to free up resources
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  await connectToDatabase();
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    const { questionId, title, content, tags, path } = params;
+
+    // Find the question to ensure it exists
+    const question = await Question.findById(questionId).session(session);
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    // Step 1: Remove tag
+    const allQuestionTag = await Tag.find({ questions: questionId }).session(
+      session
+    );
+    for (const tagDocument of allQuestionTag) {
+      const hasTag = tags.includes(tagDocument.name);
+      if (!hasTag) {
+        await Tag.updateOne(
+          { _id: tagDocument._id },
+          { $pull: { questions: questionId } },
+          { session }
+        );
+      }
+    }
+
+    // Step 2: Update or create new tag
+    const tagDocuments = [];
+    for (const tagName of tags) {
+      const existingTag = await Tag.findOneAndUpdate(
+        { name: { $regex: new RegExp(`^${tagName}$`, "i") } },
+        {
+          $setOnInsert: { name: tagName },
+          $addToSet: { questions: questionId },
+        },
+        {
+          new: true,
+          upsert: true,
+          session,
+        }
+      );
+      tagDocuments.push(existingTag._id);
+    }
+
+    // Step 3: Update question with new tags
+    // Here you might only need to set tags directly since you're synchronizing the tags array
+    await Question.findByIdAndUpdate(
+      questionId,
+      { title, content, tags: tagDocuments },
+      { session }
+    );
+
+    await session.commitTransaction();
+
+    revalidatePath(path); // Assuming this is a non-database operation, related to Next.js or caching
+  } catch (error) {
+    await session.abortTransaction();
+    console.error(error); // Use console.error for errors
+    throw error; // Rethrowing the error might be necessary if you handle it further up the chain
   } finally {
     session.endSession();
   }

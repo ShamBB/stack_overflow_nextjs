@@ -147,11 +147,12 @@ export async function deleteAnswer(params: DeleteAnswerParams) {
       throw new Error("answer not found");
     }
 
-    await Answer.deleteOne({ _id: answerId });
-    await Interaction.deleteMany({ answer: answerId });
+    await Answer.deleteOne({ _id: answerId }).session(session);
+    await Interaction.deleteMany({ answer: answerId }).session(session);
     await Question.updateMany(
       { answers: answerId },
-      { $pull: { answers: answerId } }
+      { $pull: { answers: answerId } },
+      { session }
     );
 
     await session.commitTransaction();

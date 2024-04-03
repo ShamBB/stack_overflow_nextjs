@@ -2,7 +2,7 @@
 import { deleteAnswer } from "@/lib/actions/answer.action";
 import { deleteQuestion } from "@/lib/actions/question.action";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 
 const EditDeleteAction = ({ type, itemId }: Props) => {
   const pathname = usePathname();
+  const router = useRouter();
   const handleDelete = async () => {
     if (type === "Question") {
       await deleteQuestion({ path: pathname, questionId: JSON.parse(itemId) });
@@ -19,6 +20,11 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
       await deleteAnswer({ path: pathname, answerId: JSON.parse(itemId) });
     }
   };
+
+  const handleEdit = async () => {
+    router.push(`/question/edit/${JSON.parse(itemId)}`);
+  };
+
   return (
     <div className=" flex items-center gap-3">
       {type === "Question" && (
@@ -28,6 +34,7 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
           width={14}
           height={14}
           className="cursor-pointer object-cover"
+          onClick={() => handleEdit()}
         />
       )}
 
