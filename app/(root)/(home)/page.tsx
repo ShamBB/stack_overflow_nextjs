@@ -8,12 +8,10 @@ import { HomePageFilters } from "@/constant/filters";
 import { getQuestions } from "@/lib/actions/question.action";
 import { auth } from "@clerk/nextjs";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default async function Home() {
   const result = await getQuestions({});
   const { userId: clerkId } = auth();
-  if (!clerkId) redirect("/sign-in");
 
   return (
     <>

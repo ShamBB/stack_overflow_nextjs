@@ -18,6 +18,7 @@ import { Question } from "@/database/question.model";
 import { Tag } from "@/database/tag.model";
 import { FilterQuery } from "mongoose";
 import { Answer } from "@/database/answer.model";
+import { clerkClient } from "@clerk/nextjs";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
@@ -73,6 +74,7 @@ export async function updateUser(params: UpdateUserParams) {
   try {
     connectToDatabase();
     const { clerkId, updateData, path } = params;
+
     await User.findOneAndUpdate({ clerkId }, updateData, {
       new: true,
     });
@@ -236,5 +238,37 @@ export async function getUserAnswers(params: GetUserStatsParams) {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
+
+export async function updateUserInfo(params: UpdateUserParams) {
+  try {
+    connectToDatabase();
+    const { clerkId, updateData, path } = params;
+
+    await User.findOneAndUpdate({ clerkId }, updateData, {
+      new: true,
+    });
+
+    // update clerk
+    let firstName = "";
+    let lastName = "";
+    if (updateData.name) {
+      const names = updateData.name.trim().split(" ");
+      firstName = names[0];
+      lastName = names.slice(1).join(" ");
+    }
+
+    const clerkUpdateData = {
+      username: updateData.username,
+      firstName,
+      lastName,
+    };
+
+    await clerkClient.users.updateUser(clerkId, clerkUpdateData);
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
   }
 }
