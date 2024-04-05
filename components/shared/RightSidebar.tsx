@@ -2,55 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RenderTag from "./RenderTag";
+import { getHotQuestions } from "@/lib/actions/question.action";
+import { topTags } from "@/lib/actions/tag.action";
 
-const hotQuestions = [
-  {
-    _id: "1",
-    title:
-      "Would it be appropriate to point out an error in another paper during a referee report?",
-  },
-  {
-    _id: "2",
-    title: "How can an airconditioning machine exist?",
-  },
-  {
-    _id: "3",
-    title: "Interrogated every time crossing UK Border as citizen",
-  },
-  {
-    _id: "4",
-    title: "Low digit addition generator",
-  },
-  {
-    _id: "5",
-    title: "What is an example of 3 numbers that do not make up a vector?",
-  },
-];
+const RightSidebar = async () => {
+  const hotQuestions = await getHotQuestions();
+  const popularTags = await topTags();
 
-const popularTags = [
-  {
-    _id: "1",
-    name: "JAVASCRIPT",
-    count: 20152,
-  },
-  {
-    _id: "2",
-    name: "NEXT.js",
-    count: 20152,
-  },
-  {
-    _id: "3",
-    name: "React.js",
-    count: 20152,
-  },
-  {
-    _id: "4",
-    name: "Node.js",
-    count: 20152,
-  },
-];
-
-const RightSidebar = () => {
   return (
     <section
       className="background-light900_dark200 light-border 
@@ -89,7 +47,7 @@ const RightSidebar = () => {
                 key={tag._id}
                 _id={tag._id}
                 name={tag.name}
-                totalQuestions={tag.count}
+                totalQuestions={tag.totalQuestions}
                 showCount
               />
             ))}

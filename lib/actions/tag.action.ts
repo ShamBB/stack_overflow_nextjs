@@ -85,3 +85,24 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
     throw new Error();
   }
 }
+
+export async function topTags() {
+  try {
+    await connectToDatabase();
+    const question = await Tag.aggregate([
+      {
+        $addFields: {
+          totalQuestions: { $size: "$questions" },
+          totalFollowers: { $size: "$followers" },
+        },
+      },
+      { $sort: { totalQuestions: -1, totalFollowers: -1 } },
+      { $limit: 5 },
+      { $project: { _id: 1, name: 1, totalQuestions: 1 } },
+    ]);
+    return question;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

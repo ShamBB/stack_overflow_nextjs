@@ -16,6 +16,7 @@ import { User } from "@/database/user.mode";
 import { revalidatePath } from "next/cache";
 import { Answer } from "@/database/answer.model";
 import { Interaction } from "@/database/interaction.model";
+import error from "next/error";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -274,5 +275,32 @@ export async function editQuestion(params: EditQuestionParams) {
     throw error; // Rethrowing the error might be necessary if you handle it further up the chain
   } finally {
     session.endSession();
+  }
+}
+
+export async function getHotQuestions() {
+  try {
+    await connectToDatabase();
+    const question = await Question.aggregate([
+      {
+        $addFields: {
+          totalUpvotes: { $size: "$upvotes" },
+          totalAnswers: { $size: "$answers" },
+        },
+      },
+      {
+        $sort: { views: -1, totalUpvotes: -1, totalAnswers: -1 },
+      },
+      {
+        $limit: 5, // Limit to the top 5 records
+      },
+      {
+        $project: { _id: 1, title: 1 }, // Only include the _id and title fields in the output
+      },
+    ]);
+    return question;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
