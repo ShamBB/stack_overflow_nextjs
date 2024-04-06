@@ -5,6 +5,7 @@ import React from "react";
 import Theme from "./Theme";
 import MobileNav from "./MobileNav";
 import GlobalSearch from "../search/GlobalSearch";
+import SearchDisplay from "../search/SearchDisplay";
 
 const Navbar = () => {
   return (
@@ -28,6 +29,7 @@ const Navbar = () => {
       </Link>
 
       <GlobalSearch />
+      {/* <SearchDisplay /> */}
       <div className="flex-between gap-5">
         <Theme />
         <SignedIn>

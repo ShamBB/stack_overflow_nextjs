@@ -4,12 +4,14 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import SearchDisplay from "./SearchDisplay";
 
 const GlobalSearch = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   const [globalSearch, setGlobalSearch] = useState("");
+  const [texttoPass, settexttoPass] = useState("");
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -27,9 +29,10 @@ const GlobalSearch = () => {
       } else {
         router.push(pathname);
       }
-    }, 500);
+      settexttoPass(globalSearch);
+    }, 1000);
     return () => clearTimeout(timeoutId);
-  }, [globalSearch]);
+  }, [globalSearch, pathname, router, createQueryString]);
 
   function handleChangeSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     const textInput = e.target as HTMLInputElement;
