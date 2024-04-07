@@ -20,7 +20,7 @@ export default async function TagDetail({ params, searchParams }: URLProps) {
       max-sm:flex-col md:items-stretch"
       >
         <LocalSearchBar
-          route="/"
+          route={`/tags/${params.id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search tag questions..."

@@ -53,12 +53,14 @@ const LocalSearchBar = ({
 
         router.push(newUrl, { scroll: false });
       } else {
-        const newUrl = removeKeysFromQuery({
-          params: searchParams.toString(),
-          keysToRemove: ["q"],
-        });
+        if (pathname === route) {
+          const newUrl = removeKeysFromQuery({
+            params: searchParams.toString(),
+            keysToRemove: ["q"],
+          });
 
-        router.push(newUrl, { scroll: false });
+          router.push(newUrl, { scroll: false });
+        }
       }
     }, 500);
     return () => clearTimeout(timeoutId);

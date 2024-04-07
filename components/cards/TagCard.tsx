@@ -11,7 +11,7 @@ interface IProps {
 
 const TagCard = ({ tag }: IProps) => {
   return (
-    <Link passHref legacyBehavior href={`/question/${tag._id}`}>
+    <Link passHref legacyBehavior href={`/tags/${tag._id}`}>
       <article
         className="shadow-light100_darknone
         background-light900_dark200 light-border flex w-full

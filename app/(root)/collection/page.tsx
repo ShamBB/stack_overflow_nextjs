@@ -4,14 +4,18 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { QuestionFilters } from "@/constant/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-export default async function Collection() {
+export default async function Collection({ searchParams }: SearchParamsProps) {
   // const result = await getQuestions({});
   const { userId: clerkId } = auth();
   if (!clerkId) redirect("/sign-in");
-  const result = await getSavedQuestions({ clerkId });
+  const result = await getSavedQuestions({
+    searchQuery: searchParams.q,
+    clerkId,
+  });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>
@@ -21,7 +25,7 @@ export default async function Collection() {
       max-sm:flex-col md:items-stretch"
       >
         <LocalSearchBar
-          route="/"
+          route="/collection"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search for Questions Here..."
