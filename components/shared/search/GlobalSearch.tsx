@@ -22,17 +22,17 @@ const GlobalSearch = () => {
     [searchParams]
   );
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (globalSearch) {
-        router.push(pathname + "?" + createQueryString("global", globalSearch));
-      } else {
-        router.push(pathname);
-      }
-      settexttoPass(globalSearch);
-    }, 1000);
-    return () => clearTimeout(timeoutId);
-  }, [globalSearch, pathname, router, createQueryString]);
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     if (globalSearch) {
+  //       router.push(pathname + "?" + createQueryString("global", globalSearch));
+  //     } else {
+  //       router.push(pathname);
+  //     }
+  //     settexttoPass(globalSearch);
+  //   }, 1000);
+  //   return () => clearTimeout(timeoutId);
+  // }, [globalSearch, pathname, router, createQueryString]);
 
   function handleChangeSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     const textInput = e.target as HTMLInputElement;

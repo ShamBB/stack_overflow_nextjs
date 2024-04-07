@@ -1,7 +1,9 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import Image from "next/image";
-import React from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface CustomInputProps {
   route: string;
@@ -18,6 +20,55 @@ const LocalSearchBar = ({
   placeholder,
   otherClasses,
 }: CustomInputProps) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const queryText = searchParams.get("q") || "";
+  const [search, setSearch] = useState(queryText);
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      // if (search) {
+      //   router.push(pathname + "?" + createQueryString("q", search));
+      // } else {
+      //   router.push(pathname);
+      // }
+
+      if (search) {
+        const newUrl = formUrlQuery({
+          params: searchParams.toString(),
+          key: "q",
+          value: search,
+        });
+
+        router.push(newUrl, { scroll: false });
+      } else {
+        const newUrl = removeKeysFromQuery({
+          params: searchParams.toString(),
+          keysToRemove: ["q"],
+        });
+
+        router.push(newUrl, { scroll: false });
+      }
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [createQueryString, pathname, router, search, searchParams]);
+
+  function handleChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    const textInput = e.target as HTMLInputElement;
+    const textValue = textInput?.value.trim();
+    setSearch(textValue);
+  }
   return (
     <div
       className={`background-light800_darkgradient flex min-h-[56px] 
@@ -36,8 +87,8 @@ const LocalSearchBar = ({
       <Input
         type="text"
         placeholder={placeholder}
-        value=""
-        onChange={() => {}}
+        value={search}
+        onChange={(e) => handleChangeSearch(e)}
         className="paragraph-regular no-focus placeholder 
       text-dark400_light700
       border-none bg-transparent shadow-none outline-none"

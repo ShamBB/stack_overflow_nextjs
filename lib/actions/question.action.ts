@@ -3,7 +3,7 @@
 import { IQuestion, Question } from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import { Tag } from "@/database/tag.model";
-import mongoose from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import {
   CreateQuestionParams,
   DeleteQuestionParams,
@@ -20,9 +20,20 @@ import error from "next/error";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof Question> = searchQuery
+      ? {
+          $or: [
+            { title: { $regex: new RegExp(searchQuery, "i") } },
+            { content: { $regex: new RegExp(searchQuery, "i") } },
+          ],
+        }
+      : {};
+
     connectToDatabase();
 
-    const questions = await Question.find()
+    const questions = await Question.find(query)
       .populate({
         path: "tags",
         model: Tag,
