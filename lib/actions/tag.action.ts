@@ -35,7 +35,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 
 export async function getAllTags(params: GetAllTagsParams) {
   try {
-    const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    const { searchQuery } = params;
     const query: FilterQuery<typeof Tag> = searchQuery
       ? {
           $or: [{ name: { $regex: new RegExp(searchQuery, "i") } }],

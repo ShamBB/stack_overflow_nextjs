@@ -11,7 +11,10 @@ import { auth } from "@clerk/nextjs";
 import Link from "next/link";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result = await getQuestions({ searchQuery: searchParams.q });
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   const { userId: clerkId } = auth();
 
   return (

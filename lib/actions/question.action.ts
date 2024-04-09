@@ -16,12 +16,12 @@ import { User } from "@/database/user.mode";
 import { revalidatePath } from "next/cache";
 import { Answer } from "@/database/answer.model";
 import { Interaction } from "@/database/interaction.model";
-import error from "next/error";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
 
+    // Construct the search query
     const query: FilterQuery<typeof Question> = searchQuery
       ? {
           $or: [
@@ -31,8 +31,32 @@ export async function getQuestions(params: GetQuestionsParams) {
         }
       : {};
 
-    connectToDatabase();
+    // Determine the sort criteria based on the filter
+    let sortCriteria = {};
+    switch (filter) {
+      case "newest":
+        sortCriteria = { createdAt: -1 }; // Sort by creation time, newest first
+        break;
+      // case "recommended":
+      //   sortCriteria = { createdAt: 1 }; // Sort by creation time, oldest first
+      //   break;
+      case "frequent":
+        sortCriteria = { views: -1 }; // Assuming 'viewCount' is a field, sort by view count, most views first
+        break;
+      case "unanswered":
+        query.answers = { $size: 0 };
 
+        break;
+      // Add more cases as needed
+      default:
+        sortCriteria = { createdAt: -1 }; // Default sorting
+    }
+
+    console.log(sortCriteria);
+
+    await connectToDatabase(); // Connect to database
+
+    // Execute the query with dynamic sorting
     const questions = await Question.find(query)
       .populate({
         path: "tags",
@@ -42,11 +66,11 @@ export async function getQuestions(params: GetQuestionsParams) {
         path: "author",
         model: User,
       })
-      .sort({ createdAt: -1 });
+      .sort(sortCriteria); // Apply the dynamic sort criteria here
 
     return { questions };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }

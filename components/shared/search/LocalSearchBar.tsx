@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import Image from "next/image";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface CustomInputProps {
   route: string;
@@ -26,15 +26,15 @@ const LocalSearchBar = ({
   const queryText = searchParams.get("q") || "";
   const [search, setSearch] = useState(queryText);
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
+  // const createQueryString = useCallback(
+  //   (name: string, value: string) => {
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set(name, value);
 
-      return params.toString();
-    },
-    [searchParams]
-  );
+  //     return params.toString();
+  //   },
+  //   [searchParams]
+  // );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -64,7 +64,7 @@ const LocalSearchBar = ({
       }
     }, 500);
     return () => clearTimeout(timeoutId);
-  }, [createQueryString, pathname, router, search, searchParams]);
+  }, [pathname, route, router, search, searchParams]);
 
   function handleChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const textInput = e.target as HTMLInputElement;
