@@ -109,7 +109,7 @@ export async function deleteUser(params: DeleteUserParams) {
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
 
     const query: FilterQuery<typeof User> = searchQuery
       ? {
@@ -120,9 +120,25 @@ export async function getAllUsers(params: GetAllUsersParams) {
         }
       : {};
 
+    let sortCriteria = {};
+    switch (filter) {
+      case "top_contributors":
+        sortCriteria = { reputation: 1 }; // Sort by creation time, newest first
+        break;
+      case "new_users":
+        sortCriteria = { joinedAt: -1 };
+        break;
+      case "old_users":
+        sortCriteria = { joinedAt: 1 };
+        break;
+
+      default:
+        sortCriteria = { createdAt: -1 }; // Default sorting
+    }
+
     connectToDatabase();
     // const { page = 1, pageSize = 20, filter, searchQuery } = params;
-    const users = await User.find(query).sort({ createdAt: -1 });
+    const users = await User.find(query).sort(sortCriteria);
     return users;
   } catch (error) {
     console.log(error);

@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -7,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { removeKeysFromQuery, formUrlQuery } from "@/lib/utils";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface FilterSearchProps {
   filters: {
@@ -22,10 +25,26 @@ const Filter = ({
   otherClasses,
   containerClasses,
 }: FilterSearchProps) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryText = searchParams.get("filter") || "";
+  const [value, setValue] = useState(queryText);
+
+  const handleChange = (newValue: string) => {
+    const newUrl = formUrlQuery({
+      params: searchParams.toString(),
+      key: "filter",
+      value: newValue.toLowerCase(),
+    });
+
+    router.push(newUrl, { scroll: false });
+    setValue(newValue);
+  };
+
   return (
     <>
       <div className={`relative ${containerClasses}`}>
-        <Select>
+        <Select value={value} onValueChange={handleChange}>
           <SelectTrigger
             className={`background-light800_dark300 text-dark500_light700 
           light-border body-regular
