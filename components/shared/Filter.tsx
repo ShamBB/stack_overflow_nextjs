@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { removeKeysFromQuery, formUrlQuery } from "@/lib/utils";
+import { formUrlQuery } from "@/lib/utils";
 import { useSearchParams, useRouter } from "next/navigation";
 
 interface FilterSearchProps {

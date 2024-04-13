@@ -2,12 +2,15 @@ import TagCard from "@/components/cards/TagCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
-import { UserFilters } from "@/constant/filters";
+import { TagFilters } from "@/constant/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
 import { SearchParamsProps } from "@/types";
 
 const Tag = async ({ searchParams }: SearchParamsProps) => {
-  const allTags = await getAllTags({ searchQuery: searchParams.q });
+  const allTags = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
@@ -25,7 +28,7 @@ const Tag = async ({ searchParams }: SearchParamsProps) => {
             otherClasses="flex-1"
           />
           <Filter
-            filters={UserFilters}
+            filters={TagFilters}
             otherClasses="min-h-[56px] sm:min-w-[170px]"
           />
         </div>

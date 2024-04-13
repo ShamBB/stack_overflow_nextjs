@@ -21,7 +21,6 @@ export async function createAnswer(params: CreateAnswerParams) {
 
   try {
     const { content, author, question, path } = params;
-
     await session.startTransaction();
     const answer: IAnswer[] = await Answer.create(
       [
@@ -60,10 +59,30 @@ export async function createAnswer(params: CreateAnswerParams) {
 
 export async function getAnswers(params: GetAnswersParams) {
   try {
-    const { questionId } = params;
+    const { questionId, sortBy } = params;
+
+    let sortCriteria = {};
+    switch (sortBy) {
+      case "highestupvotes":
+        sortCriteria = { upvotes: -1 }; // Sort by creation time, newest first
+        break;
+      case "lowestupvotes":
+        sortCriteria = { upvotes: 1 };
+        break;
+      case "recent":
+        sortCriteria = { createdAt: -1 };
+        break;
+      case "old":
+        sortCriteria = { createdAt: 1 };
+        break;
+
+      default:
+        sortCriteria = { createdAt: -1 }; // Default sorting
+    }
+
     const answers = await Answer.find({ question: questionId })
       .populate("author", "_id clerkId name picture")
-      .sort({ createdAt: -1 });
+      .sort(sortCriteria);
     return answers;
   } catch (error) {
     console.log(error);
