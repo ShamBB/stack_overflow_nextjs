@@ -179,7 +179,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     await connectToDatabase(); // Make sure you're connected to the database
 
-    const { clerkId, searchQuery } = params;
+    const { clerkId, searchQuery, filter } = params;
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? {
@@ -190,6 +190,28 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         }
       : {};
 
+    let sortCriteria = {};
+    switch (filter) {
+      case "most_recent":
+        sortCriteria = { createdAt: -1 }; // Sort by creation time, newest first
+        break;
+      case "oldest":
+        sortCriteria = { createdAt: 1 };
+        break;
+      case "most_voted":
+        sortCriteria = { upvotes: -1 };
+        break;
+      case "most_viewed":
+        sortCriteria = { views: -1 };
+        break;
+      case "most_answered":
+        sortCriteria = { answers: -1 };
+        break;
+
+      default:
+        sortCriteria = { createdAt: -1 }; // Default sorting
+    }
+
     const userInfo = await User.findOne({
       clerkId,
     }).populate({
@@ -197,7 +219,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       model: Question,
       match: query,
       options: {
-        sort: { createdAt: -1 },
+        sort: sortCriteria,
       },
       populate: [
         {

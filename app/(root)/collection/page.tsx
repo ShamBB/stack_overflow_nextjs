@@ -14,6 +14,7 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
   if (!clerkId) redirect("/sign-in");
   const result = await getSavedQuestions({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
     clerkId,
   });
   return (
