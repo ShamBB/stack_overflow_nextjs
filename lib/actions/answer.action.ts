@@ -59,7 +59,7 @@ export async function createAnswer(params: CreateAnswerParams) {
 
 export async function getAnswers(params: GetAnswersParams) {
   try {
-    const { questionId, sortBy } = params;
+    const { questionId, sortBy, page = 1, pageSize = 10 } = params;
 
     let sortCriteria = {};
     switch (sortBy) {
@@ -80,10 +80,18 @@ export async function getAnswers(params: GetAnswersParams) {
         sortCriteria = { createdAt: -1 }; // Default sorting
     }
 
+    await connectToDatabase();
+
     const answers = await Answer.find({ question: questionId })
       .populate("author", "_id clerkId name picture")
-      .sort(sortCriteria);
-    return answers;
+      .sort(sortCriteria)
+      .skip(page > 0 ? (page - 1) * pageSize : 0)
+      .limit(pageSize);
+
+    const totalAnswers = await Answer.countDocuments({ question: questionId });
+    const islastPage = totalAnswers <= page * pageSize;
+
+    return { answers, islastPage };
   } catch (error) {
     console.log(error);
     throw error;

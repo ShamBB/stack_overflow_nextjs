@@ -15,9 +15,9 @@ const TagCard = ({ tag }: IProps) => {
       <article
         className="shadow-light100_darknone
         background-light900_dark200 light-border flex w-full
-        cursor-pointer flex-col items-start
-        justify-center rounded-2xl px-8 py-10 
-        max-xs:min-w-full xs:w-[260px]"
+        cursor-pointer flex-col items-center
+        justify-center gap-2 rounded-2xl px-8 
+        py-10 max-xs:min-w-full xs:w-[220px]"
       >
         <Link
           href={`/tags/${tag._id}`}
@@ -26,11 +26,11 @@ const TagCard = ({ tag }: IProps) => {
         >
           {tag.name}
         </Link>
-        <h3 className="text-dark500_light700  small-regular pb-[14px] pt-5">
+        {/* <h3 className="text-dark500_light700  small-regular pb-[14px] pt-5">
           JavaScript, often abbreviated as JS, is a programming language that is
           one of the core technologies of the World Wide Web, alongside HTML and
           CSS
-        </h3>
+        </h3> */}
         <div className="flex items-baseline gap-3">
           <p className="primary-gradient body-semibold !bg-clip-text text-transparent">
             {tag.questions.length}+

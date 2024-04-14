@@ -15,7 +15,7 @@ interface NoResultProps {
 const NoResult = ({ title, description, link, linkTitle }: NoResultProps) => {
   const { mode } = useTheme() || {};
   return (
-    <div className="mt-10 flex flex-col items-center justify-center gap-7">
+    <div className="m-auto mt-10 flex flex-col items-center justify-center gap-7">
       <Image
         src={
           mode === "light"

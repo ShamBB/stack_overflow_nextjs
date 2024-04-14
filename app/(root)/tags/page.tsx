@@ -1,6 +1,7 @@
 import TagCard from "@/components/cards/TagCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { TagFilters } from "@/constant/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
@@ -10,6 +11,7 @@ const Tag = async ({ searchParams }: SearchParamsProps) => {
   const allTags = await getAllTags({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
   return (
     <>
@@ -32,9 +34,9 @@ const Tag = async ({ searchParams }: SearchParamsProps) => {
             otherClasses="min-h-[56px] sm:min-w-[170px]"
           />
         </div>
-        <section className="mt-2 flex flex-1 flex-wrap gap-4">
-          {allTags && allTags.length > 0 ? (
-            allTags?.map((tagObj) => {
+        <section className="mt-2 flex w-full flex-1 flex-wrap gap-4">
+          {allTags && allTags.tags.length > 0 ? (
+            allTags.tags?.map((tagObj) => {
               return <TagCard key={tagObj._id} tag={tagObj} />;
             })
           ) : (
@@ -46,6 +48,13 @@ const Tag = async ({ searchParams }: SearchParamsProps) => {
             />
           )}
         </section>
+      </div>
+
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams.page ? +searchParams.page : 1}
+          isLastPage={allTags?.islastPage || false}
+        />
       </div>
     </>
   );

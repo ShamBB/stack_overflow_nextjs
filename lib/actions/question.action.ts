@@ -19,8 +19,7 @@ import { Interaction } from "@/database/interaction.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
-    const { searchQuery, filter } = params;
-
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
     // Construct the search query
     const query: FilterQuery<typeof Question> = searchQuery
       ? {
@@ -35,26 +34,25 @@ export async function getQuestions(params: GetQuestionsParams) {
     let sortCriteria = {};
     switch (filter) {
       case "newest":
-        sortCriteria = { createdAt: -1 }; // Sort by creation time, newest first
+        sortCriteria = { createdAt: -1 };
         break;
       // case "recommended":
       //   sortCriteria = { createdAt: 1 }; // Sort by creation time, oldest first
       //   break;
       case "frequent":
-        sortCriteria = { views: -1 }; // Assuming 'viewCount' is a field, sort by view count, most views first
+        sortCriteria = { views: -1 };
         break;
       case "unanswered":
         query.answers = { $size: 0 };
 
         break;
-      // Add more cases as needed
       default:
-        sortCriteria = { createdAt: -1 }; // Default sorting
+        sortCriteria = { createdAt: -1 };
     }
 
-    console.log(sortCriteria);
-
     await connectToDatabase(); // Connect to database
+
+    const totalQuestions = await Question.countDocuments(query);
 
     // Execute the query with dynamic sorting
     const questions = await Question.find(query)
@@ -66,9 +64,13 @@ export async function getQuestions(params: GetQuestionsParams) {
         path: "author",
         model: User,
       })
-      .sort(sortCriteria); // Apply the dynamic sort criteria here
+      .sort(sortCriteria)
+      .skip(page > 0 ? (page - 1) * pageSize : 0)
+      .limit(pageSize);
 
-    return { questions };
+    const islastPage = totalQuestions <= page * pageSize;
+
+    return { questions, islastPage };
   } catch (error) {
     console.error(error);
     throw error;

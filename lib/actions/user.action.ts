@@ -109,7 +109,7 @@ export async function deleteUser(params: DeleteUserParams) {
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
 
     const query: FilterQuery<typeof User> = searchQuery
       ? {
@@ -137,9 +137,15 @@ export async function getAllUsers(params: GetAllUsersParams) {
     }
 
     connectToDatabase();
-    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
-    const users = await User.find(query).sort(sortCriteria);
-    return users;
+    const totalUsers = await User.countDocuments(query);
+
+    const users = await User.find(query)
+      .sort(sortCriteria)
+      .skip(page > 0 ? (page - 1) * pageSize : 0)
+      .limit(pageSize);
+
+    const islastPage = totalUsers <= page * pageSize;
+    return { users, islastPage };
   } catch (error) {
     console.log(error);
   }
@@ -179,7 +185,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     await connectToDatabase(); // Make sure you're connected to the database
 
-    const { clerkId, searchQuery, filter } = params;
+    const { clerkId, searchQuery, filter, page = 1, pageSize = 10 } = params;
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? {
@@ -212,6 +218,14 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         sortCriteria = { createdAt: -1 }; // Default sorting
     }
 
+    const totalQuestions = await User.findOne({ clerkId })
+      .populate({
+        path: "saved",
+        match: query,
+        select: "_id", // Only select the ids for counting
+      })
+      .then((result) => (result ? result.saved.length : 0));
+
     const userInfo = await User.findOne({
       clerkId,
     }).populate({
@@ -220,6 +234,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       match: query,
       options: {
         sort: sortCriteria,
+        skip: page > 0 ? (page - 1) * pageSize : 0,
+        limit: pageSize,
       },
       populate: [
         {
@@ -233,11 +249,15 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
           select: "_id name picture clerkId",
         },
       ],
-    }); // Execute the query
+    });
+
+    const isLastPage =
+      (page - 1) * pageSize + userInfo.saved.length >= totalQuestions;
+
     if (!userInfo) {
       throw new Error("User not found");
     }
-    return { savedQuestion: userInfo.saved }; // This will have the user info along with saved questions and their tags populated
+    return { savedQuestion: userInfo.saved, isLastPage }; // This will have the user info along with saved questions and their tags populated
   } catch (error) {
     console.error(error);
     throw error;
@@ -247,7 +267,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     connectToDatabase();
-    const { userId, page = 1, pageSize = 0 } = params;
+    const { userId, page = 1, pageSize = 10 } = params;
 
     const totalQuestions = await Question.countDocuments({ author: userId });
     const questions = await Question.find({ author: userId })
@@ -263,7 +283,9 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       .skip(page > 0 ? (page - 1) * pageSize : 0)
       .limit(pageSize);
 
-    return { totalQuestions, questions };
+    const islastPage = totalQuestions <= page * pageSize;
+
+    return { totalQuestions, questions, islastPage };
   } catch (error) {
     console.log(error);
     throw error;
@@ -273,7 +295,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     connectToDatabase();
-    const { userId, page = 1, pageSize = 0 } = params;
+    const { userId, page = 1, pageSize = 10 } = params;
 
     const totalAnswers = await Answer.countDocuments({ author: userId });
     const answers = await Answer.find({ author: userId })
@@ -290,7 +312,9 @@ export async function getUserAnswers(params: GetUserStatsParams) {
       .skip(page > 0 ? (page - 1) * pageSize : 0)
       .limit(pageSize);
 
-    return { totalAnswers, answers };
+    const islastPage = totalAnswers <= page * pageSize;
+
+    return { totalAnswers, answers, islastPage };
   } catch (error) {
     console.log(error);
     throw error;

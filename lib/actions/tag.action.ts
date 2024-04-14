@@ -10,6 +10,7 @@ import {
 import { ITag, Tag } from "@/database/tag.model";
 import { Question } from "@/database/question.model";
 import { FilterQuery } from "mongoose";
+import page from "@/app/(root)/(home)/page";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -35,7 +36,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 
 export async function getAllTags(params: GetAllTagsParams) {
   try {
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
     const query: FilterQuery<typeof Tag> = searchQuery
       ? {
           $or: [{ name: { $regex: new RegExp(searchQuery, "i") } }],
@@ -61,9 +62,14 @@ export async function getAllTags(params: GetAllTagsParams) {
     }
 
     connectToDatabase();
+    const totalTags = await Tag.countDocuments(query);
+    const tags = await Tag.find(query)
+      .sort(sortCriteria)
+      .skip(page > 0 ? (page - 1) * pageSize : 0)
+      .limit(pageSize);
 
-    const tags = await Tag.find(query).sort(sortCriteria);
-    return tags;
+    const islastPage = totalTags <= page * pageSize;
+    return { tags, islastPage };
   } catch (error) {
     console.log(error);
   }
@@ -73,7 +79,7 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
   try {
     await connectToDatabase(); // Make sure you're connected to the database
 
-    const { tagId, searchQuery } = params;
+    const { tagId, searchQuery, page = 1, pageSize = 10 } = params;
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
 
@@ -86,12 +92,22 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
         }
       : {};
 
+    const totalQuestionByTag = await Tag.findOne(tagFilter)
+      .populate({
+        path: "questions",
+        match: query,
+        select: "_id",
+      })
+      .then((result) => (result ? result.questions.length : 0));
+
     const questionByTag = await Tag.findOne(tagFilter).populate({
       path: "questions",
       model: Question,
       match: query,
       options: {
         sort: { createdAt: -1 },
+        skip: page > 0 ? (page - 1) * pageSize : 0,
+        limit: pageSize,
       },
       populate: [
         {
@@ -106,11 +122,19 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
         },
       ],
     });
+
+    const isLastPage =
+      (page - 1) * pageSize + questionByTag.questions.length >=
+      totalQuestionByTag;
     // Execute the query
     if (!questionByTag) {
       throw new Error("Question by tag not found");
     }
-    return { questions: questionByTag.questions, tagName: questionByTag.name };
+    return {
+      questions: questionByTag.questions,
+      tagName: questionByTag.name,
+      isLastPage,
+    };
   } catch (error) {
     console.error(error);
     throw new Error();

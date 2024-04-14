@@ -43,7 +43,6 @@ const LocalSearchBar = ({
       // } else {
       //   router.push(pathname);
       // }
-
       if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),

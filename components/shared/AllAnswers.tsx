@@ -7,6 +7,7 @@ import Filter from "./Filter";
 import Link from "next/link";
 import Image from "next/image";
 import Votes from "./Votes";
+import Pagination from "./Pagination";
 
 interface Props {
   questionId: string;
@@ -41,7 +42,7 @@ const AllAnswers = async ({
           otherClasses="min-h-[36px] sm:min-w-[170px]"
         />
       </div>
-      {result.map((answerObj) => {
+      {result.answers.map((answerObj) => {
         return (
           <article key={answerObj._id} className="light-border border-b py-10">
             <div
@@ -84,6 +85,10 @@ const AllAnswers = async ({
           </article>
         );
       })}
+
+      <div className="mt-10">
+        <Pagination pageNumber={page || 1} isLastPage={result.islastPage} />
+      </div>
     </div>
   );
 };
