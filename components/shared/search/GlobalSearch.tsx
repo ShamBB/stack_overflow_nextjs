@@ -74,7 +74,13 @@ const GlobalSearch = () => {
           }}
         />
       </div>
-      {isOpen && <GlobalResult />}
+      {isOpen && (
+        <GlobalResult
+          onClickOutside={() => {
+            setIsOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };
