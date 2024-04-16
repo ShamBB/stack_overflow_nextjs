@@ -52,7 +52,7 @@ const LocalSearchBar = ({
 
   function handleChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const textInput = e.target as HTMLInputElement;
-    const textValue = textInput?.value.trim();
+    const textValue = textInput?.value;
     setSearch(textValue);
   }
   return (

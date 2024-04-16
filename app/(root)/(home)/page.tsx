@@ -18,7 +18,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     page: searchParams.page ? +searchParams.page : 1,
   });
   const { userId: clerkId } = auth();
-  // testing
+
   return (
     <>
       <div

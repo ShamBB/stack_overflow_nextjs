@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ const GlobalSearch = () => {
   const queryText = searchParams.get("global") || "";
   const [search, setSearch] = useState(queryText);
   const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -23,6 +24,7 @@ const GlobalSearch = () => {
           key: "global",
           value: search,
         });
+        setIsOpen(true);
 
         router.push(newUrl, { scroll: false });
       } else {
@@ -33,20 +35,34 @@ const GlobalSearch = () => {
           });
 
           router.push(newUrl, { scroll: false });
+          setIsOpen(false);
         }
       }
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [pathname, queryText, router, search, searchParams]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        setSearch("");
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [isOpen]);
+
   function handleChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const textInput = e.target as HTMLInputElement;
-    const textValue = textInput?.value.trim();
+    const textValue = textInput?.value;
     setSearch(textValue);
   }
 
   return (
-    <div className="relative w-full max-w-[600px] max-lg:hidden">
+    <div ref={ref} className="relative w-full max-w-[600px] max-lg:hidden">
       <div
         className="background-light800_darkgradient relative flex min-h-[56px] 
       grow items-center gap-1 rounded-xl px-4"
@@ -64,6 +80,7 @@ const GlobalSearch = () => {
           className="paragraph-regular no-focus placeholder 
           background-light800_darkgradient 
           text-light400_light500 border-none shadow-none outline-none"
+          value={search}
           onChange={(e) => {
             handleChangeSearch(e);
 
