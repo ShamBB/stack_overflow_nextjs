@@ -23,10 +23,10 @@ const GlobalResult = ({ onClickOutside }: GlobalResultProps) => {
     setIsLoading(true);
     const fetchData = async () => {
       try {
-        const returnvalue = await globalSearch(type, global);
-        console.log(returnvalue);
         setIsLoading(true);
-        setResult([]);
+        const returnvalue = await globalSearch({ type, query: global });
+        setResult(returnvalue ? JSON.parse(returnvalue) : []);
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
         throw error;
@@ -34,11 +34,25 @@ const GlobalResult = ({ onClickOutside }: GlobalResultProps) => {
         setIsLoading(false);
       }
     };
-    fetchData();
+    if (global) {
+      fetchData();
+    }
   }, [global, type]);
 
   const renderlink = (type: string, id: string) => {
-    return "/";
+    switch (type) {
+      case "question":
+        return `/question/${id}`;
+      case "answer":
+        return `/question/${id}`;
+      case "user":
+        return `/profile/${id}`;
+      case "tag":
+        return `/tags/${id}`;
+
+      default:
+        return "/";
+    }
   };
 
   return (
@@ -64,14 +78,14 @@ const GlobalResult = ({ onClickOutside }: GlobalResultProps) => {
             {result.length > 0 ? (
               result.map((item: any, index: number) => (
                 <Link
-                  href={renderlink("type", "id")}
+                  href={renderlink(item.type, item.id)}
                   key={item.type + item.id + index}
                   className="flex w-full cursor-pointer items-start 
                   gap-3 px-5 py-2.5 
                   hover:bg-light-700/50 dark:bg-dark-500/50"
                 >
                   <Image
-                    src="assets/icons/tag.svg"
+                    src="/assets/icons/tag.svg"
                     alt="tags"
                     width={18}
                     height={18}

@@ -24,7 +24,6 @@ const GlobalSearch = () => {
           key: "global",
           value: search,
         });
-        setIsOpen(true);
 
         router.push(newUrl, { scroll: false });
       } else {
@@ -35,7 +34,6 @@ const GlobalSearch = () => {
           });
 
           router.push(newUrl, { scroll: false });
-          setIsOpen(false);
         }
       }
     }, 500);
@@ -49,11 +47,12 @@ const GlobalSearch = () => {
         setSearch("");
       }
     };
+    setIsOpen(false);
     document.addEventListener("click", handleClickOutside, true);
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [isOpen]);
+  }, [pathname]);
 
   function handleChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const textInput = e.target as HTMLInputElement;
