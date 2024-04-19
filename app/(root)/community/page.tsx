@@ -6,7 +6,6 @@ import { UserFilters } from "@/constant/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
-import Loading from "./loading";
 
 const Community = async ({ searchParams }: SearchParamsProps) => {
   const allUsers = await getAllUsers({

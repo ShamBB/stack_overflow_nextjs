@@ -14,7 +14,6 @@ import {
 import { Button } from "../ui/button";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "@/context/ThemeProvider";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { toast } from "../ui/use-toast";
