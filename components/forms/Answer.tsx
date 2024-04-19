@@ -27,6 +27,7 @@ const Answer = ({ questionId, mongoseUserId }: Props) => {
   const { mode } = useTheme();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [isSubmittingAI, setIsSubmittingAI] = useState(false);
   const editorRef = useRef(null);
   const pathname = usePathname();
 
@@ -64,6 +65,18 @@ const Answer = ({ questionId, mongoseUserId }: Props) => {
     form.setValue("answer", editor.getContent().trim());
   };
 
+  // const generateAiAnswer = async () => {
+  //   if (!mongoseUserId) return;
+  //   setIsSubmittingAI(true);
+  //   try {
+  //     // API call
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsSubmittingAI(false);
+  //   }
+  // };
+
   return (
     <div>
       <div
@@ -84,7 +97,7 @@ const Answer = ({ questionId, mongoseUserId }: Props) => {
             height={12}
             className="object-contain"
           />
-          Generate an AI Answer
+          Generate AI Answer
         </Button>
       </div>
       <Form {...form}>

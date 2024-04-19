@@ -10,6 +10,8 @@ import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 import Link from "next/link";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestions({
@@ -20,7 +22,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId: clerkId } = auth();
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <div
         className="flex w-full flex-col-reverse 
         justify-between gap-4 sm:flex-row sm:items-center"
@@ -86,6 +88,6 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           isLastPage={result.islastPage}
         />
       </div>
-    </>
+    </Suspense>
   );
 }
