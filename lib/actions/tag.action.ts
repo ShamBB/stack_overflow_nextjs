@@ -10,7 +10,6 @@ import {
 import { ITag, Tag } from "@/database/tag.model";
 import { Question } from "@/database/question.model";
 import { FilterQuery } from "mongoose";
-import page from "@/app/(root)/(home)/page";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {

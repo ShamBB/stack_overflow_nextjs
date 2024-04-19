@@ -1,4 +1,4 @@
-import {} from "@/constants";
+import { BADGE_CRITERIA } from "@/constant";
 
 export interface SidebarLink {
   imgURL: string;

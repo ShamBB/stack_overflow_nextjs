@@ -26,23 +26,8 @@ const LocalSearchBar = ({
   const queryText = searchParams.get("q") || "";
   const [search, setSearch] = useState(queryText);
 
-  // const createQueryString = useCallback(
-  //   (name: string, value: string) => {
-  //     const params = new URLSearchParams(searchParams);
-  //     params.set(name, value);
-
-  //     return params.toString();
-  //   },
-  //   [searchParams]
-  // );
-
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      // if (search) {
-      //   router.push(pathname + "?" + createQueryString("q", search));
-      // } else {
-      //   router.push(pathname);
-      // }
       if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
@@ -67,7 +52,7 @@ const LocalSearchBar = ({
 
   function handleChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const textInput = e.target as HTMLInputElement;
-    const textValue = textInput?.value.trim();
+    const textValue = textInput?.value;
     setSearch(textValue);
   }
   return (

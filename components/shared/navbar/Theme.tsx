@@ -68,7 +68,7 @@ const Theme = () => {
           {themes.map((theme) => (
             <MenubarItem
               key={theme.value}
-              className="focus:background-light800_dark400 flex items-center gap-4 px-2.5 py-2"
+              className="focus:background-light800_dark400 flex cursor-pointer items-center gap-4 px-2.5 py-2"
               onClick={() => handleChangeTheme(theme.value)}
             >
               <Image
