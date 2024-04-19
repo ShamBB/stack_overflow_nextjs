@@ -62,7 +62,8 @@ const Filter = ({
                 <SelectItem
                   key={filterObj.value}
                   value={filterObj.value}
-                  className="text-slate-950 focus:bg-slate-100 dark:text-slate-50 dark:focus:bg-slate-800"
+                  className="cursor-pointer
+                   text-slate-950 focus:bg-slate-100 dark:text-slate-50 dark:focus:bg-slate-800"
                 >
                   {filterObj.name}
                 </SelectItem>

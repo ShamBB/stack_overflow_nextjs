@@ -6,19 +6,46 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constant/filters";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 import Link from "next/link";
 import { Suspense } from "react";
 import Loading from "./loading";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home | Dev Overflow",
+};
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+  const { userId } = auth();
+  let result;
+
+  if (searchParams.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      });
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      };
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  }
+
   const { userId: clerkId } = auth();
 
   return (
@@ -85,7 +112,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
       <div className="mt-10">
         <Pagination
           pageNumber={searchParams.page ? +searchParams.page : 1}
-          isLastPage={result.islastPage}
+          isLastPage={result.islastPage || false}
         />
       </div>
     </Suspense>

@@ -17,6 +17,7 @@ import { useTheme } from "@/context/ThemeProvider";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { createAnswer } from "@/lib/actions/answer.action";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   questionId: string;
@@ -54,6 +55,10 @@ const Answer = ({ questionId, mongoseUserId }: Props) => {
 
         editor.setContent("");
       }
+
+      toast({
+        description: "Answer Successfully created",
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -86,7 +91,7 @@ const Answer = ({ questionId, mongoseUserId }: Props) => {
         <h4 className="paragraph-semibold text-dark400_light800">
           Write your answer here
         </h4>
-        <Button
+        {/* <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 
         text-primary-500 shadow-none dark:text-primary-500"
         >
@@ -98,7 +103,7 @@ const Answer = ({ questionId, mongoseUserId }: Props) => {
             className="object-contain"
           />
           Generate AI Answer
-        </Button>
+        </Button> */}
       </div>
       <Form {...form}>
         <form
